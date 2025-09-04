@@ -63,7 +63,7 @@ export function ChatMessage({ role, content }) {
     >
       <div ref={itemRef} className={`flex items-end gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}>
         {isUser ? (
-          <div className="w-80 md:w-80 rounded-3xl px-4 py-3 shadow-md bg-blue-100/80 text-slate-900 break-words whitespace-pre-wrap">
+          <div className="max-w-[100%] rounded-3xl px-4 py-5 shadow-md bg-white/85 text-slate-900 break-words whitespace-pre-wrap">
             <p className="text-sm leading-6">{content}</p>
           </div>
         ) : isTyping ? (
