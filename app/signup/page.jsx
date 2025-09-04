@@ -1,30 +1,40 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { auth } from "../../lib/firebase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import toast from "react-hot-toast";
 
 export default function SignupPage() {
-  const router = useRouter()
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  async function onSubmit(e) {
-    e.preventDefault()
-    setLoading(true)
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setLoading(true);
     try {
-      // Demo sign up: persist minimal user in localStorage
-      const user = { name, email }
-      if (typeof window !== "undefined") {
-        localStorage.setItem("demo-auth-user", JSON.stringify(user))
-      }
-      router.push("/")
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Set display name (optional)
+      await updateProfile(user, { displayName: name });
+
+      console.log("User created:", user);
+      toast.success("Account created successfully!");
+
+      router.push("/"); // redirect to homepage
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-900 to-blue-600">
@@ -33,7 +43,7 @@ export default function SignupPage() {
           <h1 className="mb-1 text-balance text-2xl font-semibold text-white">Create account</h1>
           <p className="mb-6 text-sm text-white/70">Join to start chatting instantly.</p>
 
-          <form onSubmit={onSubmit} className="space-y-4">
+          <form onSubmit={handleRegister} className="space-y-4">
             <label className="block">
               <span className="mb-1 block text-sm text-white/80">Name</span>
               <input
@@ -97,5 +107,5 @@ export default function SignupPage() {
         </div>
       </div>
     </main>
-  )
+  );
 }

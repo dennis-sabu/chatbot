@@ -1,39 +1,48 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { auth } from "../../lib/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  async function onSubmit(e) {
-    e.preventDefault()
-    setLoading(true)
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
     try {
-      // Demo auth: persist minimal user in localStorage
-      const user = { email }
-      if (typeof window !== "undefined") {
-        localStorage.setItem("demo-auth-user", JSON.stringify(user))
-      }
-      // Navigate back home
-      router.push("/")
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      console.log("Logged in:", user);
+      toast.success("Login successful!");
+
+      router.push("/"); // redirect after login
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-900 to-blue-600">
       <div className="mx-auto w-full max-w-md px-4 py-10">
         <div className="rounded-3xl border border-white/15 bg-white/10 p-6 shadow-2xl backdrop-blur-xl">
           <h1 className="mb-1 text-balance text-2xl font-semibold text-white">Log in</h1>
-          <p className="mb-6 text-sm text-white/70">Welcome back. Enter your email and password to continue.</p>
+          <p className="mb-6 text-sm text-white/70">
+            Welcome back. Enter your email and password to continue.
+          </p>
 
-          <form onSubmit={onSubmit} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
             <label className="block">
               <span className="mb-1 block text-sm text-white/80">Email</span>
               <input
@@ -78,12 +87,15 @@ export default function LoginPage() {
           </p>
 
           <div className="mt-6 text-center">
-            <Link href="/" className="text-sm text-white/70 underline decoration-white/40 underline-offset-4">
+            <Link
+              href="/"
+              className="text-sm text-white/70 underline decoration-white/40 underline-offset-4"
+            >
               Back to chat
             </Link>
           </div>
         </div>
       </div>
     </main>
-  )
+  );
 }

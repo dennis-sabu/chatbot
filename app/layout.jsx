@@ -22,7 +22,22 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} antialiased font-sans`}>
       <body>{children}
 
-         <Toaster position="bottom-right" />
+          <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: '#363636',
+              color: '#fff',
+            },
+            success: {
+              duration: 3000,
+              theme: {
+                primary: '#4aed88',
+              },
+            },
+          }}
+        />
       </body>
     </html>
   )
