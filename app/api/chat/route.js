@@ -1,6 +1,39 @@
+const userLimits = new Map();
+
 export async function POST(req) {
   try {
-    const { message } = await req.json();
+    const { message, userId } = await req.json();
+
+    const now = Date.now();
+    const limit = userLimits.get(userId);
+
+        if (limit) {
+      if (now < limit.resetAt) {
+        if (limit.count >= 10) {
+          const waitHours = Math.ceil((limit.resetAt - now) / (1000 * 60 * 60));
+          return new Response(
+            JSON.stringify({
+              reply: ` Chat limit reached (10/10). Please wait ${waitHours} hour(s) before chatting again.`,
+            }),
+            { status: 200, headers: { "Content-Type": "application/json" } }
+          );
+        } else {
+          limit.count += 1;
+        }
+      } else {
+        // Reset after 20 hours
+        userLimits.set(userId, {
+          count: 1,
+          resetAt: now + 20 * 60 * 60 * 1000, // 20 hours in ms
+        });
+      }
+    } else {
+      // First time user
+      userLimits.set(userId, {
+        count: 1,
+        resetAt: now + 20 * 60 * 60 * 1000,
+      });
+    }
 
     const response = await fetch(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",

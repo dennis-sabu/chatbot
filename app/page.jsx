@@ -44,47 +44,46 @@ export default function Page() {
         {/* Header: Sign up / Sign out and profile */}
         <div className="mb-4 flex items-center justify-end">
           {/* Desktop */}
-          <div className="mr-2 hidden gap-2 md:flex">
-            {user ? (
-              <>
-                <span className="flex items-center text-sm text-white/70 mr-3">
-                  Welcome, {user.displayName || user.email}!
-                </span>
-                <button
-                  onClick={handleSignOut}
-                  className="rounded-full bg-blue-400/90 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
-                >
-                  Sign out
-                </button>
-              </>
-            ) : (
-              <Link
-                href="/signup"
-                className="rounded-full bg-blue-500/90 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
-              >
-                Sign up
-              </Link>
-            )}
-          </div>
+         <div className="mr-2 flex gap-2">
+  {user ? (
+    <>
+      {/* Mobile only */}
+      <span className="flex items-center text-sm text-white/70 mr-3 lg:hidden">
+        Welcome, {user.displayName || user.email}!
+      </span>
 
-          {/* Mobile */}
-          <div className="mr-2 flex gap-2 md:hidden">
-            {user ? (
-              <button
-                onClick={handleSignOut}
-                className="rounded-full bg-blue-300/90 px-3 py-1.5 text-xs font-semibold text-white"
-              >
-                Sign out
-              </button>
-            ) : (
-              <Link
-                href="/signup"
-                className="rounded-full bg-blue-500/90 px-3 py-1.5 text-xs font-semibold text-white"
-              >
-                Sign up
-              </Link>
-            )}
-          </div>
+      {/* Desktop only */}
+      <span className="hidden lg:flex items-center text-sm text-white/70 mr-3">
+        Welcome, {user.displayName || user.email}!
+      </span>
+
+      <button
+        onClick={handleSignOut}
+        className="rounded-full bg-blue-400/90 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
+      >
+        Sign out
+      </button>
+    </>
+  ) : (
+    <>
+      {/* Mobile only */}
+      <Link
+        href="/signup"
+        className="rounded-full bg-blue-500/90 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 lg:hidden"
+      >
+        Sign up
+      </Link>
+
+      {/* Desktop only */}
+      <Link
+        href="/signup"
+        className="hidden lg:inline-block rounded-full bg-blue-500/90 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
+      >
+        Sign up
+      </Link>
+    </>
+  )}
+</div>
 
           <ProfileLink />
         </div>
